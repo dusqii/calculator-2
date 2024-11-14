@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: rgb(242, 242, 242);
+        }
+
+        #calculator {
+            font-family: Arial, sans-serif;
+            background-color: rgb(38, 38, 38);
+            border-radius: 30px;
+            max-width: 500px;
+            overflow: hidden;
+        }
+
+        #display {
+            width: 100%;
+            padding: 20px;
+            font-size: 5rem;
+            text-align: left;
+            border: none;
+            background-color: rgb(51, 51, 51);
+            color: white;
+        }
+
+        #keys {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            padding: 25px
+        }
+
+        button {
+            width: 100px;
+            height: 100px;
+            border-radius: 50px;
+            border: none;
+            background-color: rgb(77, 77, 77);
+            color: white;
+            font-size: 3rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: rgb(102, 102, 102);
+        }
+
+        button:active {
+            background-color: rgb(128, 128, 128);
+        }
+
+        .operator-btn {
+            background-color: rgb(255, 159, 26);
+        }
+
+        .operator-btn:hover {
+            background-color: rgb(255, 181, 77);
+        }
+
+        .operator-btn:active {
+            background-color: rgb(255, 202, 128);
+        }
+
+        .delete-btn {
+            background-color: rgb(255, 77, 77);
+        }
+
+        .delete-btn:hover {
+            background-color: rgb(255, 102, 102);
+        }
+
+        .delete-btn:active {
+            background-color: rgb(255, 128, 128);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="calculator">
+        <input id="display" readonly>
+        <div id="keys">
+            <button onclick="appendToDisplay('+')" class="operator-btn">+</button>
+            <button onclick="appendToDisplay(7)">7</button>
+            <button onclick="appendToDisplay(8)">8</button>
+            <button onclick="appendToDisplay(9)">9</button>
+            <button onclick="appendToDisplay('-')" class="operator-btn">-</button>
+            <button onclick="appendToDisplay(4)">4</button>
+            <button onclick="appendToDisplay(5)">5</button>
+            <button onclick="appendToDisplay(6)">6</button>
+            <button onclick="appendToDisplay('*')" class="operator-btn">*</button>
+            <button onclick="appendToDisplay(1)">1</button>
+            <button onclick="appendToDisplay(2)">2</button>
+            <button onclick="appendToDisplay(3)">3</button>
+            <button onclick="appendToDisplay('/')" class="operator-btn">/</button>
+            <button onclick="appendToDisplay(0)">0</button>
+            <button onclick="appendToDisplay('.')">.</button>
+            <button id="equal">=</button>
+            <button id="clear" class="operator-btn">C</button>
+            <button onclick="appendToDisplay('(')" class="operator-btn">(</button>
+            <button onclick="appendToDisplay(')')" class="operator-btn">)</button>
+            <button id="deletebtn" class="delete-btn"><i class="fas fa-backspace"></i></button>
+        </div>
+    </div>
+    <script>
+        const display = document.getElementById("display");
+
+        function appendToDisplay(input) {
+            const currentText = display.value;
+            const operators = ['+', '-', '*', '/'];
+            const lastChar = currentText.slice(-1);
+            if (operators.includes(input)) {
+                if (operators.includes(lastChar)) {
+                    if (input === lastChar) {
+                        return;
+                    } else {
+                        display.value = currentText.slice(0, -1) + input;
+                        return;
+                    }
+                }
+            }
+
+            // Prevent multiple decimal points in the same number
+            if (input === '.' && currentText.includes('.')) {
+                return;
+            }
+
+            display.value += input;
+        }
+
+        document.getElementById("deletebtn").addEventListener("click", () => {
+            display.value = display.value.slice(0, -1);
+        });
+
+        document.getElementById("clear").addEventListener("click", () => {
+            display.value = "";
+        });
+
+        document.getElementById("equal").addEventListener("click", () => {
+            try {
+                const result = new Function('return ' + display.value)();
+                display.value = result;
+            } catch (error) {
+                display.value = "ERROR";
+            }
+        });
+        document.addEventListener("keydown", (event) => {
+            const key = event.key;
+            if (!isNaN(key) || ['+', '-', '*', '/', '(', ')'].includes(key) || key === '.') {
+                appendToDisplay(key);
+            } else if (key === 'Enter') {
+                document.getElementById("equal").click();
+            } else if (key === 'Backspace') {
+                document.getElementById("deletebtn").click();
+            } else if (key === 'Escape') {
+                document.getElementById("clear").click();
+            }
+        });
+    </script>
+</body>
+
+</html>
